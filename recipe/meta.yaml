@@ -1,0 +1,59 @@
+{% set name = "ctransformers" %}
+{% set version = "0.2.27" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/marella/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: 62b556c0b1d355cdb681108268ee626e6ee6f39f4abc1429606583f348c55ee8
+  patches:
+    - patches/0001-Load-library-from-conda-prefix.patch
+    - patches/0002-Fix-install-path.patch
+
+build:
+  number: 0
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - cmake
+  host:
+    - python
+    - setuptools
+    - wheel
+    - pip
+    - cudatoolkit 12  # [not osx]
+  run:
+    - huggingface_hub
+    - conda-forge::py-cpuinfo >=9.0.0,<10.0.0
+
+test:
+  source_files:
+    - tests
+  requires:
+    - python
+    - pip
+    - pytest
+  imports:
+    - ctransformers
+  commands:
+    - pip check
+    - python -c 'import ctransformers.llm; ctransformers.llm.load_library()'
+    - pytest -v tests
+
+meta:
+  home: https://github.com/marella/ctransformers
+  liense: MIT
+  license_file: LICENSE
+  license_family: MIT
+  description: Python bindings for the Transformer models implemented in C/C++ using GGML library.
+  summary: Python bindings for the Transformer models implemented in C/C++ using GGML library.
+  doc_url: https://github.com/marella/ctransformers#documentation
+  dev_url: https://github.com/marella/ctransformers
+
+extra:
+  recipe-maintainers:
+    - JeanChristopheMorinPerso
