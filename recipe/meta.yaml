@@ -25,10 +25,11 @@ requirements:
     - setuptools
     - wheel
     - pip
-    - cudatoolkit 12  # [not osx]
+    - cudatoolkit 12.3  # [not osx]
   run:
     - huggingface_hub
     - py-cpuinfo >=9.0.0,<10.0.0
+    - {{ pin_compatible('cudatoolkit', max_pin='x.x') }}
 
 test:
   source_files:
