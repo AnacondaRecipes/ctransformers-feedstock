@@ -32,7 +32,7 @@ requirements:
     - python
     - huggingface_hub
     - py-cpuinfo >=9.0.0,<10.0.0
-    - {{ pin_compatible('cudatoolkit', max_pin='x.x') }}
+    - {{ pin_compatible('cudatoolkit', max_pin='x.x') }}  # [not osx]
 
 test:
   source_files:
