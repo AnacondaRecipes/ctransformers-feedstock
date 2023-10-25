@@ -45,6 +45,12 @@ test:
     - ctransformers
   commands:
     - pip check
+    # The default cache is ~/.cache/hub and ~/.cache/assets
+    # We don't want to fill the host's disk with test data.
+    - export HUGGINGFACE_HUB_CACHE=huggingface_cache            # [not win]
+    - export HUGGINGFACE_ASSETS_CACHE=huggingface_assets_cache  # [not win]
+    - set HUGGINGFACE_HUB_CACHE="huggingface_cache"             # [win]
+    - set HUGGINGFACE_ASSETS_CACHE="huggingface_assets_cache"   # [win]
     - python -c 'import ctransformers.llm; ctransformers.llm.load_library()'
     - pytest -v tests
 
