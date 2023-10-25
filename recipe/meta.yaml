@@ -20,6 +20,8 @@ requirements:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
     - cmake
+    - patch     # [not win]
+    - m2-patch  # [win]
   host:
     - python
     - setuptools
