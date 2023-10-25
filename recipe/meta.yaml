@@ -25,7 +25,7 @@ requirements:
     - setuptools
     - wheel
     - pip
-    - cudatoolkit 12.3  # [not osx]
+    - cudatoolkit 11.8  # [not osx]
   run:
     - python
     - huggingface_hub
