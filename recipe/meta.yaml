@@ -17,8 +17,8 @@ build:
   # Use a build number difference to ensure that the GPU
   # variant is slightly preferred by conda's solver, so that it's preferentially
   # installed where the platform supports it.
-  number: {{ build_number + 100 }}  # [pytorch_variant == "gpu"]
-  number: {{ build_number }}        # [pytorch_variant == "cpu"]
+  number: {{ build_number + 100 }}  # [ctransformers_variant == "gpu"]
+  number: {{ build_number }}        # [ctransformers_variant == "cpu"]
   skip: true  # [not linux-64]
 
 outputs:
@@ -47,13 +47,13 @@ outputs:
         - setuptools
         - wheel
         - pip
-        - cudatoolkit {{ cudatoolkit }}*  # [pytorch_variant == 'gpu' and not osx]
+        - cudatoolkit {{ cudatoolkit }}*  # [ctransformers_variant == 'gpu' and not osx]
       run:
         - python
         - huggingface_hub
         - py-cpuinfo >=9.0.0,<10.0.0
-        - {{ pin_compatible('cudatoolkit', max_pin='x.x') }}  # [pytorch_variant == 'gpu' and not osx]
-        - __cuda >={{ cudatoolkit }}  # [pytorch_variant == 'gpu' and not osx]
+        - {{ pin_compatible('cudatoolkit', max_pin='x.x') }}  # [ctransformers_variant == 'gpu' and not osx]
+        - __cuda >={{ cudatoolkit }}  # [ctransformers_variant == 'gpu' and not osx]
 
     test:
       source_files:
