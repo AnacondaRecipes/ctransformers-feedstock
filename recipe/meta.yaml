@@ -77,9 +77,9 @@ outputs:
         # This will actually download model and will force GPU.
         - python -c 'from ctransformers import AutoModelForCausalLM; llm = AutoModelForCausalLM.from_pretrained("TheBloke/Llama-2-7B-GGML", gpu_layers=50); print(llm("AI is going to"))'
 
-meta:
+about:
   home: https://github.com/marella/ctransformers
-  liense: MIT
+  license: MIT
   license_file: LICENSE
   license_family: MIT
   description: Python bindings for the Transformer models implemented in C/C++ using GGML library.
