@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
 set -ex
 
+export GPU_SUPPORT="ON"
+if [[ ${ctransformers_variant} == "cpu" ]]; then
+    export GPU_SUPPORT="OFF"
+fi
+
 if [[ ${target_platform} == osx-* ]]; then
-    export CMAKE_ARGS="${CMAKE_ARGS} -DCT_METAL=ON"
+    export CMAKE_ARGS="${CMAKE_ARGS} -DCT_METAL=${GPU_SUPPORT}"
 else
-    export CMAKE_ARGS="${CMAKE_ARGS} -DCT_CUBLAS=ON"
+    export CMAKE_ARGS="${CMAKE_ARGS} -DCT_CUBLAS=${GPU_SUPPORT}"
 fi
 
 if [[ ${target_platform} == linux-* ]]; then
