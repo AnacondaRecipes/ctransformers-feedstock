@@ -1,6 +1,6 @@
 {% set name = "ctransformers" %}
 {% set version = "0.2.27" %}
-{% set build_number = 1 %}
+{% set build_number = 2 %}
 
 package:
   name: {{ name }}
@@ -13,6 +13,7 @@ source:
     - patches/0001-Load-library-from-conda-prefix.patch
     - patches/0002-Fix-install-path.patch
     - patches/0003-Make-FindCUDAToolkit-required-when-building-for-GPU.patch
+    - patches/0004-cuda-11.8.patch
 
 build:
   # Use a build number difference to ensure that the GPU
