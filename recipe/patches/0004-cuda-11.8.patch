@@ -1,0 +1,23 @@
+From 84c7be39e9feebfa635dbd000ab469b7808a784a Mon Sep 17 00:00:00 2001
+From: Sujeendran Menon <30560413+sujeendran@users.noreply.github.com>
+Date: Fri, 27 Oct 2023 13:18:04 +0530
+Subject: [PATCH] support for cuda 11.8 and above
+
+Taken from https://github.com/marella/ctransformers/pull/171.
+---
+ models/ggml/ggml-cuda.cu | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/models/ggml/ggml-cuda.cu b/models/ggml/ggml-cuda.cu
+index ea11802..e9cd5ad 100644
+--- a/models/ggml/ggml-cuda.cu
++++ b/models/ggml/ggml-cuda.cu
+@@ -133,7 +133,7 @@ static_assert(sizeof(half) == sizeof(ggml_fp16_t), "wrong fp16 size");
+         }                                                                               \
+     } while (0)
+ 
+-#if CUDART_VERSION >= 12000
++#if CUDART_VERSION >= 11000
+ #define CUBLAS_CHECK(err)                                                               \
+     do {                                                                                \
+         cublasStatus_t err_ = (err);                                                    \

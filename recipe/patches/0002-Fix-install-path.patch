@@ -1,0 +1,36 @@
+From 8cb8c70cc89658749e5f0aba320276240cc083c7 Mon Sep 17 00:00:00 2001
+From: Jean-Christophe Morin <jcmorin@anaconda.com>
+Date: Fri, 20 Oct 2023 17:32:00 -0400
+Subject: [PATCH] Fix install path
+
+---
+ CMakeLists.txt | 5 -----
+ 1 file changed, 5 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 718edeb..8aefb18 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -21,8 +21,6 @@ message(STATUS "CT_METAL: ${CT_METAL}")
+ 
+ set(BUILD_SHARED_LIBS ON)
+ set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/$<0:>)
+-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/$<0:>)
+ 
+ # Compile Flags
+ 
+@@ -226,7 +226,7 @@ endif()
+ 
+ install(
+     TARGETS ctransformers
+-    LIBRARY DESTINATION ctransformers/lib/local
+-    RUNTIME DESTINATION ctransformers/lib/local
+-    RESOURCE DESTINATION ctransformers/lib/local
++    LIBRARY DESTINATION lib
++    RUNTIME DESTINATION lib
++    RESOURCE DESTINATION lib
+ )
+-- 
+2.42.0
+
