@@ -1,0 +1,15 @@
+CONDA_BUILD_SYSROOT:                                       # [osx]
+- /Library/Developer/CommandLineTools/SDKs/MacOSX11.1.sdk  # [osx]
+macos_min_version:  # [osx]
+- 11.1              # [osx]
+MACOSX_SDK_VERSION:  # [osx]
+- 11.1               # [osx]
+MACOSX_DEPLOYMENT_TARGET:  # [osx]
+- 11.1                     # [osx]
+
+ctransformers_variant:
+- cpu
+- gpu
+
+cudatoolkit:
+- 11.8

@@ -1,0 +1,94 @@
+{% set name = "ctransformers" %}
+{% set version = "0.2.27" %}
+{% set build_number = 2 %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/marella/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: 62b556c0b1d355cdb681108268ee626e6ee6f39f4abc1429606583f348c55ee8
+  patches:
+    - patches/0001-Load-library-from-conda-prefix.patch
+    - patches/0002-Fix-install-path.patch
+    - patches/0003-Make-FindCUDAToolkit-required-when-building-for-GPU.patch
+    - patches/0004-cuda-11.8.patch
+
+build:
+  # Use a build number difference to ensure that the GPU
+  # variant is slightly preferred by conda's solver, so that it's preferentially
+  # installed where the platform supports it.
+  number: {{ build_number + 100 }}  # [ctransformers_variant == "gpu"]
+  number: {{ build_number }}        # [ctransformers_variant == "cpu"]
+  skip: true  # [not linux-64]
+
+outputs:
+  - name: ctransformers-{{ ctransformers_variant }}
+    build:
+      noarch: generic
+    requirements:
+      run:
+        - ctransformers ={{ version }}={{ ctransformers_variant }}*
+
+  - name: ctransformers
+    script: build_base.sh
+    build:
+      string: gpu_cuda{{ cudatoolkit | replace('.', '') }}py{{ CONDA_PY }}h{{PKG_HASH}}_{{ PKG_BUILDNUM }}  # [ctransformers_variant == "gpu" and linux]
+      string: gpu_mps_py{{ CONDA_PY }}h{{PKG_HASH}}_{{ PKG_BUILDNUM }}                                      # [ctransformers_variant == "gpu" and osx]
+      string: cpu_py{{ CONDA_PY }}h{{PKG_HASH}}_{{ PKG_BUILDNUM }}                                          # [ctransformers_variant == "cpu"]
+    requirements:
+      build:
+        - {{ compiler('c') }}
+        - {{ compiler('cxx') }}
+        - cmake
+        - patch     # [not win]
+        - m2-patch  # [win]
+      host:
+        - python
+        - setuptools
+        - wheel
+        - pip
+        - cudatoolkit {{ cudatoolkit }}*  # [ctransformers_variant == 'gpu' and not osx]
+      run:
+        - python
+        - huggingface_hub
+        - py-cpuinfo >=9.0.0,<10.0.0
+        - {{ pin_compatible('cudatoolkit', max_pin='x.x') }}  # [ctransformers_variant == 'gpu' and not osx]
+        - __cuda >={{ cudatoolkit }}  # [ctransformers_variant == 'gpu' and not osx]
+
+    test:
+      source_files:
+        - tests
+      requires:
+        - python
+        - pip
+        - pytest
+      imports:
+        - ctransformers
+      commands:
+        - pip check
+        # The default cache is ~/.cache/hub and ~/.cache/assets
+        # We don't want to fill the host's disk with test data.
+        - export HUGGINGFACE_HUB_CACHE=huggingface_cache            # [not win]
+        - export HUGGINGFACE_ASSETS_CACHE=huggingface_assets_cache  # [not win]
+        - set HUGGINGFACE_HUB_CACHE="huggingface_cache"             # [win]
+        - set HUGGINGFACE_ASSETS_CACHE="huggingface_assets_cache"   # [win]
+        - python -c 'import ctransformers.llm; ctransformers.llm.load_library()'
+        - pytest -v tests
+        # This will actually download model and will force GPU.
+        - python -c 'from ctransformers import AutoModelForCausalLM; llm = AutoModelForCausalLM.from_pretrained("TheBloke/Llama-2-7B-GGML", gpu_layers=50); print(llm("AI is going to"))'
+
+about:
+  home: https://github.com/marella/ctransformers
+  license: MIT
+  license_file: LICENSE
+  license_family: MIT
+  description: Python bindings for the Transformer models implemented in C/C++ using GGML library.
+  summary: Python bindings for the Transformer models implemented in C/C++ using GGML library.
+  doc_url: https://github.com/marella/ctransformers#documentation
+  dev_url: https://github.com/marella/ctransformers
+
+extra:
+  recipe-maintainers:
+    - JeanChristopheMorinPerso
