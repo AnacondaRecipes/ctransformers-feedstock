@@ -17,15 +17,19 @@ if [[ ${target_platform} == linux-* ]]; then
     export CUDACXX=/usr/local/cuda/bin/nvcc
     # If this isn't included, CUDA will use the system compiler to compile host
     export CUDAHOSTCXX="${CXX}"
+    if [[ "$target_platform" == "linux-64" ]]; then
+        # See also https://github.com/marella/ctransformers/issues/120#issuecomment-1699906392
+        export CMAKE_ARGS="${CMAKE_ARGS} -DCT_INSTRUCTIONS=avx -DCT_CUBLAS=${GPU_SUPPORT}"
+    fi
 fi
 
 # Notes:
 # * osx-arm64 and linux-aarch64 will also default to CT_INSTRUCTIONS=basic (-mcpu=native)
-# * win-64 and linux-64 supports CT_INSTRUCTIONS=avx and CT_INSTRUCTIONS=avx2. It's up to us tp decide
+# * win-64 and linux-64 supports CT_INSTRUCTIONS=avx and CT_INSTRUCTIONS=avx2. It's up to us to decide
 #   which one we want to support.
-cmake . -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON ${CMAKE_ARGS}
+cmake . -G Ninja -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON ${CMAKE_ARGS}
 
-VERBOSE=1 cmake --build build --parallel ${CPU_COUNT}
+cmake --build build --parallel ${CPU_COUNT} --verbose
 cmake --install build
 
 # The repo contains pre-compiled libraries. We don't want that.

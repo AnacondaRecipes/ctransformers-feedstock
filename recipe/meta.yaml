@@ -24,13 +24,6 @@ build:
   skip: true  # [not linux-64]
 
 outputs:
-  - name: ctransformers-{{ ctransformers_variant }}
-    build:
-      noarch: generic
-    requirements:
-      run:
-        - ctransformers ={{ version }}={{ ctransformers_variant }}*
-
   - name: ctransformers
     script: build_base.sh
     build:
@@ -42,10 +35,12 @@ outputs:
         - {{ compiler('c') }}
         - {{ compiler('cxx') }}
         - cmake
+        - ninja
         - patch     # [not win]
         - m2-patch  # [win]
       host:
         - python
+        # setuptools build backend is used if CT_WHEEL=1
         - setuptools
         - wheel
         - pip
@@ -58,14 +53,13 @@ outputs:
         - __cuda >={{ cudatoolkit }}  # [ctransformers_variant == 'gpu' and not osx]
 
     test:
+      imports:
+        - ctransformers
       source_files:
         - tests
       requires:
-        - python
         - pip
         - pytest
-      imports:
-        - ctransformers
       commands:
         - pip check
         # The default cache is ~/.cache/hub and ~/.cache/assets
@@ -75,9 +69,17 @@ outputs:
         - set HUGGINGFACE_HUB_CACHE="huggingface_cache"             # [win]
         - set HUGGINGFACE_ASSETS_CACHE="huggingface_assets_cache"   # [win]
         - python -c 'import ctransformers.llm; ctransformers.llm.load_library()'
+        # TODO: Check also pytest tests --lib {avx,avx2,basic,cuda,none}
         - pytest -v tests
         # This will actually download model and will force GPU.
         - python -c 'from ctransformers import AutoModelForCausalLM; llm = AutoModelForCausalLM.from_pretrained("TheBloke/Llama-2-7B-GGML", gpu_layers=50); print(llm("AI is going to"))'
+
+  - name: ctransformers-{{ ctransformers_variant }}
+    build:
+      noarch: generic
+    requirements:
+      run:
+        - ctransformers ={{ version }}={{ ctransformers_variant }}*
 
 about:
   home: https://github.com/marella/ctransformers
