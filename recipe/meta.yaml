@@ -71,7 +71,7 @@ outputs:
         - python -c 'import ctransformers.llm; ctransformers.llm.load_library()'
         # TODO: Check also pytest tests --lib {avx,avx2,basic,cuda,none}
         - pytest -v tests
-        - pytest tests --lib {avx,avx2,basic,cuda,none}             # [ctransformers_variant == 'gpu' and not osx]
+        - pytest tests --lib {avx,basic,cuda,none}             # [ctransformers_variant == 'gpu' and not osx]
         # This will actually download model and will force GPU.
         # The models size is 2.87G+.
         #- python -c 'from ctransformers import AutoModelForCausalLM; llm = AutoModelForCausalLM.from_pretrained("TheBloke/Llama-2-7B-GGML", gpu_layers=50); print(llm("AI is going to"))'
