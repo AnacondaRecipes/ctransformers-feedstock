@@ -8,7 +8,7 @@ MACOSX_DEPLOYMENT_TARGET:  # [osx]
   - 11.1                     # [osx]
 
 ctransformers_variant:
-  - cpu
+  #- cpu
   - gpu
 
 cudatoolkit:
