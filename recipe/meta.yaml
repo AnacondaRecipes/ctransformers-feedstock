@@ -48,7 +48,7 @@ outputs:
         - python
         - huggingface_hub
         - py-cpuinfo >=9.0.0,<10.0.0
-        - {{ pin_compatible('cudatoolkit', max_pin='x.x') }}  # [ctransformers_variant == 'gpu' and not osx]
+        - {{ pin_compatible('cuda-toolkit', max_pin='x.x') }}  # [ctransformers_variant == 'gpu' and not osx]
         - __cuda >={{ cudatoolkit }}  # [ctransformers_variant == 'gpu' and not osx]
 
     test:
@@ -67,6 +67,7 @@ outputs:
         - export HUGGINGFACE_ASSETS_CACHE=huggingface_assets_cache  # [not win]
         - set HUGGINGFACE_HUB_CACHE="huggingface_cache"             # [win]
         - set HUGGINGFACE_ASSETS_CACHE="huggingface_assets_cache"   # [win]
+        - nvcc --version
         - python -c 'import ctransformers.llm; ctransformers.llm.load_library()'
         # TODO: Check also pytest tests --lib {avx,avx2,basic,cuda,none}
         - pytest -v tests
