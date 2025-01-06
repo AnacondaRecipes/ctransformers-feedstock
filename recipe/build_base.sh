@@ -35,4 +35,4 @@ cmake --install build
 # The repo contains pre-compiled libraries. We don't want that.
 rm -v -rf ctransformers/lib
 
-CT_WHEEL=1 python -m pip install . -v --no-deps --no-build-isolation
+CT_WHEEL=1 ${PYTHON} -m pip install . -v --no-deps --no-build-isolation
