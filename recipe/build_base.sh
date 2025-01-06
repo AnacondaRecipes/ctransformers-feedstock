@@ -14,8 +14,10 @@ fi
 
 if [[ ${target_platform} == linux-* ]]; then
     if [[ "$target_platform" == "linux-64" ]]; then
+        # Verify supported instruction sets on your machine
+        cat /proc/cpuinfo | grep flags | uniq
         # See also https://github.com/marella/ctransformers/issues/120#issuecomment-1699906392
-        export CMAKE_ARGS="${CMAKE_ARGS} -DCT_INSTRUCTIONS=avx -DCT_CUBLAS=${GPU_SUPPORT}"
+        export CMAKE_ARGS="${CMAKE_ARGS} -DCT_INSTRUCTIONS=avx2 -DCT_CUBLAS=${GPU_SUPPORT}"
     fi
 fi
 
