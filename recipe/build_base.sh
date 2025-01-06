@@ -14,9 +14,9 @@ fi
 
 if [[ ${target_platform} == linux-* ]]; then
     # Provided in docker image
-    export CUDACXX=/usr/local/cuda/bin/nvcc
+    #export CUDACXX=/usr/local/cuda/bin/nvcc
     # If this isn't included, CUDA will use the system compiler to compile host
-    export CUDAHOSTCXX="${CXX}"
+    #export CUDAHOSTCXX="${CXX}"
     if [[ "$target_platform" == "linux-64" ]]; then
         # See also https://github.com/marella/ctransformers/issues/120#issuecomment-1699906392
         export CMAKE_ARGS="${CMAKE_ARGS} -DCT_INSTRUCTIONS=avx -DCT_CUBLAS=${GPU_SUPPORT}"
