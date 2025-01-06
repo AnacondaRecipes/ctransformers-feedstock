@@ -12,4 +12,4 @@ ctransformers_variant:
   - gpu
 
 cudatoolkit:
-  - 12.4
+  - 11.8
