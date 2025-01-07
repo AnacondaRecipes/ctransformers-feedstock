@@ -2,6 +2,8 @@
 {% set version = "0.2.27" %}
 {% set build_number = 2 %}
 
+{% set cuda_version = "12.4" %}
+
 package:
   name: {{ name }}
   version: {{ version }}
@@ -40,7 +42,7 @@ outputs:
     script: build_base.sh  # [unix]
     script: bld_base.bat   # [win]
     build:
-      string: gpu_cuda{{ cudatoolkit | replace('.', '') }}py{{ CONDA_PY }}h{{PKG_HASH}}_{{ PKG_BUILDNUM }}  # [ctransformers_variant == "gpu" and linux]
+      string: gpu_cuda{{ cuda_version | replace('.', '') }}py{{ CONDA_PY }}h{{PKG_HASH}}_{{ PKG_BUILDNUM }}  # [ctransformers_variant == "gpu" and linux]
       string: gpu_mps_py{{ CONDA_PY }}h{{PKG_HASH}}_{{ PKG_BUILDNUM }}                                      # [ctransformers_variant == "gpu" and osx]
       string: cpu_py{{ CONDA_PY }}h{{PKG_HASH}}_{{ PKG_BUILDNUM }}                                          # [ctransformers_variant == "cpu"]
     requirements:
@@ -58,14 +60,12 @@ outputs:
         - setuptools
         - wheel
         - pip
-        - cuda-toolkit {{ cudatoolkit }}*  # [ctransformers_variant == 'gpu' and not osx]
-        - cuda-version {{ cudatoolkit }}   # [ctransformers_variant == 'gpu' and not osx]
+        - cuda-version {{ cuda_version }}   # [ctransformers_variant == 'gpu' and not osx]
       run:
         - python
         - huggingface_hub
         - py-cpuinfo >=9.0.0,<10.0.0
-        - {{ pin_compatible('cuda-toolkit', max_pin='x.x') }}  # [ctransformers_variant == 'gpu' and not osx]
-        - cuda-version                                         # [ctransformers_variant == 'gpu' and not osx]
+        - cuda-version                      # [ctransformers_variant == 'gpu' and not osx]
 
     test:
       imports:
