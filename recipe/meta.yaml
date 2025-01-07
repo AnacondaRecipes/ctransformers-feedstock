@@ -61,7 +61,7 @@ outputs:
         - wheel
         - pip
         - cuda-version {{ cuda_version }}   # [ctransformers_variant == 'gpu' and not osx]
-        - libcublas                         # [ctransformers_variant == 'gpu' and not osx]
+        - libcublas {{ cuda_version }}      # [ctransformers_variant == 'gpu' and not osx]
       run:
         - python
         - huggingface_hub
