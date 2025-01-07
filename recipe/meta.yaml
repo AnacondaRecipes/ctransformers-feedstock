@@ -84,7 +84,7 @@ outputs:
         - set HUGGINGFACE_HUB_CACHE="huggingface_cache"             # [win]
         - set HUGGINGFACE_ASSETS_CACHE="huggingface_assets_cache"   # [win]
         - nvcc --version                                            # [ctransformers_variant == "gpu" and (linux and x86_64)]
-        - python -c 'import ctransformers.llm; ctransformers.llm.load_library()'
+        - python -c "import ctransformers.llm; ctransformers.llm.load_library()"
         - pytest -v tests
         # Check also pytest tests --lib {avx,avx2,basic,cuda,none}
         # Verify supported instruction sets on your machine
@@ -118,7 +118,7 @@ outputs:
         - set HUGGINGFACE_HUB_CACHE="huggingface_cache"             # [win]
         - set HUGGINGFACE_ASSETS_CACHE="huggingface_assets_cache"   # [win]
         - nvcc --version                                            # [ctransformers_variant == "gpu" and (linux and x86_64)]
-        - python -c 'import ctransformers.llm; ctransformers.llm.load_library()'
+        - python -c "import ctransformers.llm; ctransformers.llm.load_library()"
         - pytest -v tests
         # Check also pytest tests --lib {avx,avx2,basic,cuda,none}
         # Verify supported instruction sets on your machine
