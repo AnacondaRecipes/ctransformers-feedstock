@@ -7,10 +7,10 @@ SetLocal EnableDelayedExpansion
 
 if "%ctransformers_variant%"=="cpu" (
     set "GPU_SUPPORT=OFF"
-	set CMAKE_ARGS="%CMAKE_ARGS% %GPU_SUPPORT%"
+	set CMAKE_ARGS="%CMAKE_ARGS% -DCT_CUBLAS=%GPU_SUPPORT%"
 ) else (
     set "GPU_SUPPORT=ON"
-	set CMAKE_ARGS="%CMAKE_ARGS% %GPU_SUPPORT%"
+	set CMAKE_ARGS="%CMAKE_ARGS% -DCT_CUBLAS=%GPU_SUPPORT%"
 )
 
 REM Notes:
