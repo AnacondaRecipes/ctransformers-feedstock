@@ -82,8 +82,8 @@ outputs:
         # see https://github.com/huggingface/huggingface_hub/blob/main/docs/source/en/package_reference/environment_variables.md#hf_hub_cache
         - export HF_HUB_CACHE=huggingface_cache            # [not win]
         - export HF_ASSETS_CACHE=huggingface_assets_cache  # [not win]
-        - set HF_HUB_CACHE="huggingface_cache"             # [win]
-        - set HF_ASSETS_CACHE="huggingface_assets_cache"   # [win]
+        - set "HF_HUB_CACHE=huggingface_cache"             # [win]
+        - set "HF_ASSETS_CACHE=huggingface_assets_cache"   # [win]
         - nvcc --version                                            # [ctransformers_variant == "gpu" and (linux and x86_64)]
         - python -c "import ctransformers.llm; ctransformers.llm.load_library()"
         - pytest -v tests
@@ -115,8 +115,8 @@ outputs:
         # We don't want to fill the host's disk with test data.
         - export HUGGINGFACE_HUB_CACHE=huggingface_cache            # [not win]
         - export HUGGINGFACE_ASSETS_CACHE=huggingface_assets_cache  # [not win]
-        - set HUGGINGFACE_HUB_CACHE="huggingface_cache"             # [win]
-        - set HUGGINGFACE_ASSETS_CACHE="huggingface_assets_cache"   # [win]
+        - set "HUGGINGFACE_HUB_CACHE=huggingface_cache"             # [win]
+        - set "HUGGINGFACE_ASSETS_CACHE=huggingface_assets_cache"   # [win]
         - nvcc --version                                            # [ctransformers_variant == "gpu" and (linux and x86_64)]
         - python -c "import ctransformers.llm; ctransformers.llm.load_library()"
         - pytest -v tests
