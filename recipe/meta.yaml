@@ -20,7 +20,7 @@ build:
   # installed where the platform supports it.
   number: {{ build_number + 100 }}  # [ctransformers_variant == "gpu"]
   number: {{ build_number }}        # [ctransformers_variant == "cpu"]
-  skip: true # [skip_cuda_prefect and (gpu_variant or "").startswith('cuda')]
+  skip: true # [skip_cuda_prefect and (ctransformers_variant or "").startswith('gpu')]
   # cuda-libraries 12.4.* (a dependency of cuda-toolkit) isn't available on s390x
   skip: true  # [win or s390x]
 
@@ -28,7 +28,7 @@ requirements:
   build:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    #- {{ compiler('cuda') }}  # [ctransformers_variant == 'gpu' and not osx]
+    - {{ compiler('cuda') }}  # [ctransformers_variant == 'gpu' and not osx]
     - cmake
     - ninja
     - patch     # [not win]
@@ -45,7 +45,7 @@ outputs:
       build:
         - {{ compiler('c') }}
         - {{ compiler('cxx') }}
-        #- {{ compiler('cuda') }}  # [ctransformers_variant == 'gpu' and not osx]
+        - {{ compiler('cuda') }}  # [ctransformers_variant == 'gpu' and not osx]
         - cmake
         - ninja
         - patch     # [not win]
@@ -57,14 +57,14 @@ outputs:
         - wheel
         - pip
         - cuda-toolkit {{ cudatoolkit }}*  # [ctransformers_variant == 'gpu' and not osx]
-        #- cuda-version                     # [ctransformers_variant == 'gpu' and not osx]
+        - cuda-version                     # [ctransformers_variant == 'gpu' and not osx]
       run:
         - python
         - huggingface_hub
         - py-cpuinfo >=9.0.0,<10.0.0
         - {{ pin_compatible('cuda-toolkit', max_pin='x.x') }}  # [ctransformers_variant == 'gpu' and not osx]
-        #- cuda-version                                         # [ctransformers_variant == 'gpu' and not osx]
-        - __cuda >={{ cudatoolkit }}                           # [ctransformers_variant == 'gpu' and not osx]
+        - cuda-version                                         # [ctransformers_variant == 'gpu' and not osx]
+        #- __cuda >={{ cudatoolkit }}                           # [ctransformers_variant == 'gpu' and not osx]
 
     test:
       imports:
