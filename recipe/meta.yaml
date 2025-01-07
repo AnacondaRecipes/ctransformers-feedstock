@@ -23,6 +23,15 @@ build:
   skip: true # [skip_cuda_prefect and (gpu_variant or "").startswith('cuda')]
   skip: true  # [win]
 
+build:
+  - {{ compiler('c') }}
+  - {{ compiler('cxx') }}
+  - {{ compiler('cuda') }}  # [ctransformers_variant == 'gpu' and not osx]
+  - cmake
+  - ninja
+  - patch     # [not win]
+  - m2-patch  # [win]
+
 outputs:
   - name: ctransformers
     script: build_base.sh
@@ -45,14 +54,14 @@ outputs:
         - setuptools
         - wheel
         - pip
-        - cuda-toolkit {{ cudatoolkit }}*
-        - cuda-version  # [ctransformers_variant == 'gpu' and not osx]
+        - cuda-toolkit {{ cudatoolkit }}*  # [ctransformers_variant == 'gpu' and not osx]
+        - cuda-version                     # [ctransformers_variant == 'gpu' and not osx]
       run:
         - python
         - huggingface_hub
         - py-cpuinfo >=9.0.0,<10.0.0
         - {{ pin_compatible('cuda-toolkit', max_pin='x.x') }}  # [ctransformers_variant == 'gpu' and not osx]
-        - cuda-version  # [ctransformers_variant == 'gpu' and not osx]
+        - cuda-version                                         # [ctransformers_variant == 'gpu' and not osx]
 
     test:
       imports:
