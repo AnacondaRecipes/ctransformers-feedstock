@@ -28,6 +28,7 @@ requirements:
   build:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
+    - {{ compiler('cuda') }}  # [ctransformers_variant == 'gpu' and not osx]
     - cmake
     - ninja
     - patch     # [not win]
