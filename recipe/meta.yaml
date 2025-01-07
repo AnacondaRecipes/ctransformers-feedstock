@@ -31,7 +31,6 @@ requirements:
   build:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    - {{ compiler('cuda') }}  # [ctransformers_variant == 'gpu' and not osx]
     - cmake
     - ninja
     - patch     # [not win]
@@ -49,7 +48,6 @@ outputs:
       build:
         - {{ compiler('c') }}
         - {{ compiler('cxx') }}
-        - {{ compiler('cuda') }}  # [ctransformers_variant == 'gpu' and not osx]
         - cmake
         - ninja
         - patch     # [not win]
@@ -60,15 +58,14 @@ outputs:
         - setuptools
         - wheel
         - pip
-        - cuda-version {{ cuda_version }}   # [ctransformers_variant == 'gpu' and not osx]
         # The CUDAToolkit has been set as required in 0003-Make-FindCUDAToolkit-required-when-building-for-GPU.patch
         - cuda-toolkit {{ cuda_version }}*   # [ctransformers_variant == 'gpu' and not osx]
       run:
         - python
         - huggingface_hub
         - py-cpuinfo >=9.0.0,<10.0.0
-        - cuda-version                      # [ctransformers_variant == 'gpu' and not osx]
         - {{ pin_compatible('cuda-toolkit', max_pin='x.x') }}  # [ctransformers_variant == 'gpu' and not osx]
+        - __cuda >={{ cudatoolkit }}                           # [ctransformers_variant == 'gpu' and not osx]
 
     test:
       imports:
@@ -82,10 +79,11 @@ outputs:
         - pip check
         # The default cache is ~/.cache/hub and ~/.cache/assets
         # We don't want to fill the host's disk with test data.
-        - export HUGGINGFACE_HUB_CACHE=huggingface_cache            # [not win]
-        - export HUGGINGFACE_ASSETS_CACHE=huggingface_assets_cache  # [not win]
-        - set HUGGINGFACE_HUB_CACHE="huggingface_cache"             # [win]
-        - set HUGGINGFACE_ASSETS_CACHE="huggingface_assets_cache"   # [win]
+        # see https://github.com/huggingface/huggingface_hub/blob/main/docs/source/en/package_reference/environment_variables.md#hf_hub_cache
+        - export HF_HUB_CACHE=huggingface_cache            # [not win]
+        - export HF_ASSETS_CACHE=huggingface_assets_cache  # [not win]
+        - set HF_HUB_CACHE="huggingface_cache"             # [win]
+        - set HF_ASSETS_CACHE="huggingface_assets_cache"   # [win]
         - nvcc --version                                            # [ctransformers_variant == "gpu" and (linux and x86_64)]
         - python -c "import ctransformers.llm; ctransformers.llm.load_library()"
         - pytest -v tests
