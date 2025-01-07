@@ -22,7 +22,7 @@ build:
   number: {{ build_number }}        # [ctransformers_variant == "cpu"]
   skip: true # [skip_cuda_prefect and (ctransformers_variant or "").startswith('gpu')]
   # cuda-libraries 12.4.* (a dependency of cuda-toolkit) isn't available on s390x
-  skip: true  # [win or s390x]
+  skip: true  # [s390x]
 
 # cmake couldn't be found without a generic build section
 requirements:
@@ -37,7 +37,8 @@ requirements:
 
 outputs:
   - name: ctransformers
-    script: build_base.sh
+    script: build_base.sh  # [unix]
+    script: bld_base.bat   # [win]
     build:
       string: gpu_cuda{{ cudatoolkit | replace('.', '') }}py{{ CONDA_PY }}h{{PKG_HASH}}_{{ PKG_BUILDNUM }}  # [ctransformers_variant == "gpu" and linux]
       string: gpu_mps_py{{ CONDA_PY }}h{{PKG_HASH}}_{{ PKG_BUILDNUM }}                                      # [ctransformers_variant == "gpu" and osx]
