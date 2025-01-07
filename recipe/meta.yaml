@@ -24,6 +24,17 @@ build:
   # cuda-libraries 12.4.* (a dependency of cuda-toolkit) isn't available on s390x
   skip: true  # [win or s390x]
 
+# cmake couldn't be found without a generic build section
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - {{ compiler('cuda') }}  # [ctransformers_variant == 'gpu' and not osx]
+    - cmake
+    - ninja
+    - patch     # [not win]
+    - m2-patch  # [win]
+
 outputs:
   - name: ctransformers
     script: build_base.sh
@@ -35,7 +46,7 @@ outputs:
       build:
         - {{ compiler('c') }}
         - {{ compiler('cxx') }}
-        #- {{ compiler('cuda') }}  # [ctransformers_variant == 'gpu' and not osx]
+        - {{ compiler('cuda') }}  # [ctransformers_variant == 'gpu' and not osx]
         - cmake
         - ninja
         - patch     # [not win]
@@ -47,14 +58,13 @@ outputs:
         - wheel
         - pip
         - cuda-toolkit {{ cudatoolkit }}*  # [ctransformers_variant == 'gpu' and not osx]
-        #- cuda-version {{ cudatoolkit }}   # [ctransformers_variant == 'gpu' and not osx]
+        - cuda-version {{ cudatoolkit }}   # [ctransformers_variant == 'gpu' and not osx]
       run:
         - python
         - huggingface_hub
         - py-cpuinfo >=9.0.0,<10.0.0
         - {{ pin_compatible('cuda-toolkit', max_pin='x.x') }}  # [ctransformers_variant == 'gpu' and not osx]
-        #- cuda-version                                         # [ctransformers_variant == 'gpu' and not osx]
-        - __cuda >={{ cudatoolkit }}                           # [ctransformers_variant == 'gpu' and not osx]
+        - cuda-version                                         # [ctransformers_variant == 'gpu' and not osx]
 
     test:
       imports:
