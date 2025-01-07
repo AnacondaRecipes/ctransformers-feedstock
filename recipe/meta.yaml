@@ -5,7 +5,7 @@
 {% set cuda_version = "12.4" %}
 
 package:
-  name: {{ name }}
+  name: {{ name }}-suite
   version: {{ version }}
 
 source:
@@ -23,7 +23,7 @@ build:
   number: {{ build_number + 100 }}  # [ctransformers_variant == "gpu"]
   number: {{ build_number }}        # [ctransformers_variant == "cpu"]
   skip: true # [skip_cuda_prefect and (ctransformers_variant or "").startswith('gpu')]
-  # cuda-libraries 12.4.* (a dependency of cuda-toolkit) isn't available on s390x
+  # libcublas and cuda-libraries 12.4.* (a dependency of cuda-toolkit) isn't available on s390x
   skip: true  # [s390x]
 
 # cmake couldn't be found without a generic build section
@@ -61,11 +61,13 @@ outputs:
         - wheel
         - pip
         - cuda-version {{ cuda_version }}   # [ctransformers_variant == 'gpu' and not osx]
+        - libcublas                         # [ctransformers_variant == 'gpu' and not osx]
       run:
         - python
         - huggingface_hub
         - py-cpuinfo >=9.0.0,<10.0.0
         - cuda-version                      # [ctransformers_variant == 'gpu' and not osx]
+        - libcublas                         # [ctransformers_variant == 'gpu' and not osx]
 
     test:
       imports:
