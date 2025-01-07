@@ -22,7 +22,7 @@ if %ERRORLEVEL% neq 0 exit 1
 cmake --build build --parallel %CPU_COUNT% --verbose
 if %ERRORLEVEL% neq 0 exit 1
 
-cmake --install build
+cmake --install build --prefix %PREFIX%
 if %ERRORLEVEL% neq 0 exit 1
 
 REM The repo contains pre-compiled libraries. We don't want that.

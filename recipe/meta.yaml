@@ -87,8 +87,7 @@ outputs:
         - python -c "import ctransformers.llm; ctransformers.llm.load_library()"
         - pytest -v tests
         # Check also pytest tests --lib {avx,avx2,basic,cuda,none}
-        # Verify supported instruction sets on your machine
-        - cat /proc/cpuinfo | grep flags | uniq                     # [ctransformers_variant == "gpu" and (linux and x86_64)]
+        # Verify supported instruction
         - pytest tests --lib avx2                                    # [ctransformers_variant == "gpu" and (linux and x86_64)]
         # This will actually download model and will force GPU.
         # The models size is 2.87G+.
@@ -121,8 +120,7 @@ outputs:
         - python -c "import ctransformers.llm; ctransformers.llm.load_library()"
         - pytest -v tests
         # Check also pytest tests --lib {avx,avx2,basic,cuda,none}
-        # Verify supported instruction sets on your machine
-        - cat /proc/cpuinfo | grep flags | uniq                     # [ctransformers_variant == "gpu" and (linux and x86_64)]
+        # Verify supported instruction
         - pytest tests --lib avx2                                    # [ctransformers_variant == "gpu" and (linux and x86_64)]
         # This will actually download model and will force GPU.
         # The models size is 2.87G+.
