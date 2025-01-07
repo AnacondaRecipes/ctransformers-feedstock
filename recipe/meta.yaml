@@ -62,12 +62,14 @@ outputs:
         - pip
         - cuda-version {{ cuda_version }}   # [ctransformers_variant == 'gpu' and not osx]
         - libcublas {{ cuda_version }}      # [ctransformers_variant == 'gpu' and not osx]
+        - cuda-cudart {{ cuda_version }}    # [ctransformers_variant == 'gpu' and not osx]
       run:
         - python
         - huggingface_hub
         - py-cpuinfo >=9.0.0,<10.0.0
         - cuda-version                      # [ctransformers_variant == 'gpu' and not osx]
         - libcublas                         # [ctransformers_variant == 'gpu' and not osx]
+        - cuda-cudart                       # [ctransformers_variant == 'gpu' and not osx]
 
     test:
       imports:
