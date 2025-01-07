@@ -1,11 +1,16 @@
+:: cmd
 @echo on
+
+echo "Building %PKG_NAME%."
 
 SetLocal EnableDelayedExpansion
 
 if "%ctransformers_variant%"=="cpu" (
     set "GPU_SUPPORT=OFF"
+	set CMAKE_ARGS="%CMAKE_ARGS% %GPU_SUPPORT%"
 ) else (
     set "GPU_SUPPORT=ON"
+	set CMAKE_ARGS="%CMAKE_ARGS% %GPU_SUPPORT%"
 )
 
 REM Notes:
