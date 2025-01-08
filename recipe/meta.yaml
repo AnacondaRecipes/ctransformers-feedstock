@@ -56,7 +56,9 @@ outputs:
         - huggingface_hub
         - py-cpuinfo >=9.0.0,<10.0.0
         - {{ pin_compatible('cuda-toolkit', max_pin='x.x') }}  # [ctransformers_variant == 'gpu' and not osx]
-        - __cuda >={{ cuda_version }}                           # [ctransformers_variant == 'gpu' and not osx]
+        - __cuda >={{ cuda_version }}                          # [ctransformers_variant == 'gpu' and not osx]
+        - cuda-cudart                                          # [ctransformers_variant == 'gpu' and not osx]
+        - libcublas                                            # [ctransformers_variant == 'gpu' and not osx]
 
     test:
       imports:
