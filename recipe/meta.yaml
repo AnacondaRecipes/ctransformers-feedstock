@@ -39,6 +39,7 @@ outputs:
       build:
         - {{ compiler('c') }}
         - {{ compiler('cxx') }}
+        - {{ compiler('cuda') }}
         - cmake
         - ninja
         - patch     # [not win]
