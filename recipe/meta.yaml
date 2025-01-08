@@ -60,6 +60,14 @@ outputs:
         - cuda-cudart {{ cuda_version }}                       # [ctransformers_variant == 'gpu' and not osx]
         - libcublas {{ cuda_version }}                         # [ctransformers_variant == 'gpu' and not osx]
 
+    test:
+      imports:
+        - ctransformers
+      requires:
+        - pip
+      commands:
+        - pip check
+
   - name: ctransformers-{{ ctransformers_variant }}
     build:
       noarch: generic
