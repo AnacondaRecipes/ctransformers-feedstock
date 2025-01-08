@@ -26,15 +26,6 @@ build:
   # libcublas and cuda-libraries 12.4.* (a dependency of cuda-toolkit) isn't available on s390x
   skip: true  # [s390x]
 
-# cmake couldn't be found without a generic build section
-requirements:
-  build:
-    - {{ compiler('c') }}
-    - {{ compiler('cxx') }}
-    - cmake
-    - ninja
-    - patch     # [not win]
-    - m2-patch  # [win]
 
 outputs:
   - name: ctransformers
