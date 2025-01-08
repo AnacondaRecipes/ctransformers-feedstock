@@ -57,35 +57,8 @@ outputs:
         - py-cpuinfo >=9.0.0,<10.0.0
         - {{ pin_compatible('cuda-toolkit', max_pin='x.x') }}  # [ctransformers_variant == 'gpu' and not osx]
         - __cuda >={{ cuda_version }}                          # [ctransformers_variant == 'gpu' and not osx]
-        - cuda-cudart                                          # [ctransformers_variant == 'gpu' and not osx]
-        - libcublas                                            # [ctransformers_variant == 'gpu' and not osx]
-
-    # test:
-    #   imports:
-    #     - ctransformers
-    #   source_files:
-    #     - tests
-    #   requires:
-    #     - pip
-    #     - pytest
-    #   commands:
-    #     - pip check
-    #     # The default cache is ~/.cache/hub and ~/.cache/assets
-    #     # We don't want to fill the host's disk with test data.
-    #     # see https://github.com/huggingface/huggingface_hub/blob/main/docs/source/en/package_reference/environment_variables.md#hf_hub_cache
-    #     - export HF_HUB_CACHE=huggingface_cache            # [not win]
-    #     - export HF_ASSETS_CACHE=huggingface_assets_cache  # [not win]
-    #     - set "HF_HUB_CACHE=huggingface_cache"             # [win]
-    #     - set "HF_ASSETS_CACHE=huggingface_assets_cache"   # [win]
-    #     - nvcc --version                                            # [ctransformers_variant == "gpu" and (linux and x86_64)]
-    #     - python -c "import ctransformers.llm; ctransformers.llm.load_library()"
-    #     - pytest -v tests
-    #     # Check also pytest tests --lib {avx,avx2,basic,cuda,none}
-    #     # Verify supported instruction
-    #     - pytest tests --lib avx2                                    # [ctransformers_variant == "gpu" and (linux and x86_64)]
-    #     # This will actually download model and will force GPU.
-    #     # The models size is 2.87G+.
-    #     #- python -c 'from ctransformers import AutoModelForCausalLM; llm = AutoModelForCausalLM.from_pretrained("TheBloke/Llama-2-7B-GGML", gpu_layers=50); print(llm("AI is going to"))'
+        - cuda-cudart {{ cuda_version }}                       # [ctransformers_variant == 'gpu' and not osx]
+        - libcublas {{ cuda_version }}                         # [ctransformers_variant == 'gpu' and not osx]
 
   - name: ctransformers-{{ ctransformers_variant }}
     build:
@@ -114,7 +87,7 @@ outputs:
         - python -c "import ctransformers.llm; ctransformers.llm.load_library()"
         - pytest -v tests
         # Check also pytest tests --lib {avx,avx2,basic,cuda,none}
-        # Verify supported instruction
+        # Verify avx2 as a default supported instruction
         - pytest tests --lib avx2                                    # [ctransformers_variant == "gpu" and (linux and x86_64)]
         # This will actually download model and will force GPU.
         # The models size is 2.87G+.
