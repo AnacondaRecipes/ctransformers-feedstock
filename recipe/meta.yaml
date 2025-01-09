@@ -22,7 +22,7 @@ build:
   # installed where the platform supports it.
   number: {{ build_number + 100 }}  # [ctransformers_variant == "gpu"]
   number: {{ build_number }}        # [ctransformers_variant == "cpu"]
-  skip: true # [skip_cuda_prefect and (ctransformers_variant or "").startswith('gpu')]
+  skip: true # [skip_cuda_prefect and (ctransformers_variant or "").startswith('gpu') and not (osx and arm64)]
   # libcublas and cuda-libraries 12.4.* (a dependency of cuda-toolkit) isn't available on s390x
   skip: true  # [s390x]
 
