@@ -20,7 +20,7 @@ fi
 cmake . -G Ninja -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON ${CMAKE_ARGS}
 
 cmake --build build --parallel ${CPU_COUNT} --verbose
-cmake --install build
+cmake --install build --prefix "${PREFIX}"
 
 # The repo contains pre-compiled libraries. We don't want that.
 rm -v -rf ctransformers/lib
