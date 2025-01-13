@@ -18,9 +18,9 @@ build:
   # Use a build number difference to ensure that the GPU
   # variant is slightly preferred by conda's solver, so that it's preferentially
   # installed where the platform supports it.
-  number: {{ build_number + 100 }}  # [ctransformers_variant == "gpu"]
-  number: {{ build_number }}        # [ctransformers_variant == "cpu"]
-  skip: true # [skip_cuda_prefect and (ctransformers_variant or "").startswith('gpu') and not (osx and arm64)]
+  number: {{ build_number + 100 }}  # [gpu_variant == "gpu"]
+  number: {{ build_number }}        # [gpu_variant == "cpu"]
+  skip: true # [skip_cuda_prefect and (gpu_variant or "").startswith('gpu') and not (osx and arm64)]
   # libcublas and cuda-libraries 12.4.* (a dependency of cuda-toolkit) isn't available on s390x
   skip: true  # [s390x]
 
@@ -30,14 +30,14 @@ outputs:
     script: build_base.sh  # [unix]
     script: bld_base.bat   # [win]
     build:
-      string: gpu_cuda{{ cuda_compiler_version | replace('.', '') }}py{{ CONDA_PY }}h{{PKG_HASH}}_{{ PKG_BUILDNUM }}  # [ctransformers_variant == "gpu" and (linux or win)]
-      string: gpu_mps_py{{ CONDA_PY }}h{{PKG_HASH}}_{{ PKG_BUILDNUM }}                                      # [ctransformers_variant == "gpu" and osx]
-      string: cpu_py{{ CONDA_PY }}h{{PKG_HASH}}_{{ PKG_BUILDNUM }}                                          # [ctransformers_variant == "cpu"]
+      string: gpu_cuda{{ cuda_compiler_version | replace('.', '') }}py{{ CONDA_PY }}h{{PKG_HASH}}_{{ PKG_BUILDNUM }}  # [gpu_variant == "gpu" and (linux or win)]
+      string: gpu_mps_py{{ CONDA_PY }}h{{PKG_HASH}}_{{ PKG_BUILDNUM }}                                      # [gpu_variant == "gpu" and osx]
+      string: cpu_py{{ CONDA_PY }}h{{PKG_HASH}}_{{ PKG_BUILDNUM }}                                          # [gpu_variant == "cpu"]
     requirements:
       build:
         - {{ compiler('c') }}
         - {{ compiler('cxx') }}
-        - {{ compiler('cuda') }}  # [ctransformers_variant == 'gpu' and not osx]
+        - {{ compiler('cuda') }}  # [gpu_variant == 'gpu' and not osx]
         - cmake
         - ninja
         - patch     # [not win]
@@ -49,17 +49,17 @@ outputs:
         - wheel
         - pip
         # The CUDAToolkit has been set as required in 0003-Make-FindCUDAToolkit-required-when-building-for-GPU.patch
-        - cuda-toolkit {{ cuda_compiler_version }}*   # [ctransformers_variant == 'gpu' and not osx]
+        - cuda-toolkit {{ cuda_compiler_version }}*   # [gpu_variant == 'gpu' and not osx]
       run:
         - python
         - huggingface_hub
         - py-cpuinfo >=9.0.0,<10.0.0
-        - {{ pin_compatible('cuda-toolkit', max_pin='x.x') }}  # [ctransformers_variant == 'gpu' and not osx]
+        - {{ pin_compatible('cuda-toolkit', max_pin='x.x') }}  # [gpu_variant == 'gpu' and not osx]
         # __cuda isn't available on win
-        - __cuda >={{ cuda_compiler_version }}                          # [ctransformers_variant == 'gpu' and not (osx or win)]
-        - {{ pin_compatible('cuda-version', max_pin='x.x') }}  # [(ctransformers_variant or "").startswith('gpu') and not osx]
-        - cuda-cudart {{ cuda_compiler_version }}                       # [ctransformers_variant == 'gpu' and not osx]
-        - libcublas {{ cuda_compiler_version }}                         # [ctransformers_variant == 'gpu' and not osx]
+        - __cuda >={{ cuda_compiler_version }}                          # [gpu_variant == 'gpu' and not (osx or win)]
+        - {{ pin_compatible('cuda-version', max_pin='x.x') }}  # [(gpu_variant or "").startswith('gpu') and not osx]
+        - cuda-cudart {{ cuda_compiler_version }}                       # [gpu_variant == 'gpu' and not osx]
+        - libcublas {{ cuda_compiler_version }}                         # [gpu_variant == 'gpu' and not osx]
 
     test:
       imports:
@@ -69,12 +69,12 @@ outputs:
       commands:
         - pip check
 
-  - name: ctransformers-{{ ctransformers_variant }}
+  - name: ctransformers-{{ gpu_variant }}
     build:
       noarch: generic
     requirements:
       run:
-        - ctransformers ={{ version }}={{ ctransformers_variant }}*
+        - ctransformers ={{ version }}={{ gpu_variant }}*
 
     test:
       imports:
@@ -92,12 +92,12 @@ outputs:
         - export HUGGINGFACE_ASSETS_CACHE=huggingface_assets_cache  # [not win]
         - set "HUGGINGFACE_HUB_CACHE=huggingface_cache"             # [win]
         - set "HUGGINGFACE_ASSETS_CACHE=huggingface_assets_cache"   # [win]
-        - nvcc --version                                            # [ctransformers_variant == "gpu" and (linux and x86_64)]
+        - nvcc --version                                            # [gpu_variant == "gpu" and (linux and x86_64)]
         - python -c "import ctransformers.llm; ctransformers.llm.load_library()"
         - pytest -v tests
         # Check also pytest tests --lib {avx,avx2,basic,cuda,none}
         # Verify avx2 as a default supported instruction
-        - pytest tests --lib avx2                                    # [ctransformers_variant == "gpu" and (linux and x86_64)]
+        - pytest tests --lib avx2                                    # [gpu_variant == "gpu" and (linux and x86_64)]
         # This will actually download model and will force GPU.
         # The models size is 2.87G+.
         #- python -c 'from ctransformers import AutoModelForCausalLM; llm = AutoModelForCausalLM.from_pretrained("TheBloke/Llama-2-7B-GGML", gpu_layers=50); print(llm("AI is going to"))'

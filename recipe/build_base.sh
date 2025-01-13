@@ -2,7 +2,7 @@
 set -ex
 
 export GPU_SUPPORT="ON"
-if [[ ${ctransformers_variant} == "cpu" ]]; then
+if [[ ${gpu_variant} == "cpu" ]]; then
     export GPU_SUPPORT="OFF"
 else
     if [[ ${target_platform} == osx-* ]]; then

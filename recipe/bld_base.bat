@@ -5,7 +5,7 @@ echo "Building %PKG_NAME%."
 
 SetLocal EnableDelayedExpansion
 
-if "%ctransformers_variant%"=="cpu" (
+if "%gpu_variant%"=="cpu" (
 	set CT_CUBLAS="-DCT_CUBLAS=OFF"
 ) else (
 	set CT_CUBLAS="-DCT_CUBLAS=ON"
