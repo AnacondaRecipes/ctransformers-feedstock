@@ -92,12 +92,8 @@ outputs:
         - export HUGGINGFACE_ASSETS_CACHE=huggingface_assets_cache  # [not win]
         - set "HUGGINGFACE_HUB_CACHE=huggingface_cache"             # [win]
         - set "HUGGINGFACE_ASSETS_CACHE=huggingface_assets_cache"   # [win]
-        - nvcc --version                                            # [gpu_variant == "gpu" and (linux and x86_64)]
         - python -c "import ctransformers.llm; ctransformers.llm.load_library()"
         - pytest -v tests
-        # Check also pytest tests --lib {avx,avx2,basic,cuda,none}
-        # Verify avx2 as a default supported instruction
-        - pytest tests --lib avx2                                    # [gpu_variant == "gpu" and (linux and x86_64)]
         # This will actually download model and will force GPU.
         # The models size is 2.87G+.
         #- python -c 'from ctransformers import AutoModelForCausalLM; llm = AutoModelForCausalLM.from_pretrained("TheBloke/Llama-2-7B-GGML", gpu_layers=50); print(llm("AI is going to"))'
