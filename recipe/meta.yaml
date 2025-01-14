@@ -58,8 +58,7 @@ outputs:
         - py-cpuinfo >=9.0.0,<10.0.0
         - {{ pin_compatible('cuda-toolkit', max_pin='x.x') }}  # [gpu_variant == 'gpu' and not osx]
         # __cuda isn't available on win
-        - __cuda >={{ cuda_compiler_version }}                          # [gpu_variant == 'gpu' and not (osx or win)]
-        - {{ pin_compatible('cuda-version', max_pin='x.x') }}  # [(gpu_variant or "").startswith('gpu') and not osx]
+        - __cuda                             # [gpu_variant == 'gpu' and not (osx or win)]
         - cuda-cudart                        # [gpu_variant == 'gpu' and not osx]
         - libcublas                          # [gpu_variant == 'gpu' and not osx]
 
