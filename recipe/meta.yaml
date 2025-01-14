@@ -96,7 +96,7 @@ outputs:
         - pytest -v tests
         # This will actually download model and will force GPU.
         # The models size is 2.87G+.
-        #- python -c 'from ctransformers import AutoModelForCausalLM; llm = AutoModelForCausalLM.from_pretrained("TheBloke/Llama-2-7B-GGML", gpu_layers=50); print(llm("AI is going to"))'
+        - python -c 'from ctransformers import AutoModelForCausalLM; llm = AutoModelForCausalLM.from_pretrained("TheBloke/Llama-2-7B-GGML", gpu_layers=50); print(llm("AI is going to"))'
 
 
 about:
