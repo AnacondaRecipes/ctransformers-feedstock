@@ -18,9 +18,9 @@ build:
   # Use a build number difference to ensure that the GPU
   # variant is slightly preferred by conda's solver, so that it's preferentially
   # installed where the platform supports it.
-  number: {{ build_number + 100 }}  # [gpu_variant == "gpu"]
+  number: {{ build_number + 100 }}  # [gpu_variant == "cuda"]
   number: {{ build_number }}        # [gpu_variant == "cpu"]
-  skip: true # [skip_cuda_prefect and (gpu_variant or "").startswith('gpu') and not (osx and arm64)]
+  skip: true # [skip_cuda_prefect and (gpu_variant or "").startswith('cuda') and not (osx and arm64)]
   # libcublas and cuda-libraries 12.4.* (a dependency of cuda-toolkit) isn't available on s390x
   skip: true  # [s390x]
 
@@ -30,14 +30,14 @@ outputs:
     script: build_base.sh  # [unix]
     script: bld_base.bat   # [win]
     build:
-      string: gpu_cuda{{ cuda_compiler_version | replace('.', '') }}py{{ CONDA_PY }}h{{PKG_HASH}}_{{ PKG_BUILDNUM }}  # [gpu_variant == "gpu" and (linux or win)]
-      string: gpu_mps_py{{ CONDA_PY }}h{{PKG_HASH}}_{{ PKG_BUILDNUM }}                                      # [gpu_variant == "gpu" and osx]
+      string: gpu_cuda{{ cuda_compiler_version | replace('.', '') }}py{{ CONDA_PY }}h{{PKG_HASH}}_{{ PKG_BUILDNUM }}  # [gpu_variant == "cuda" and (linux or win)]
+      string: gpu_mps_py{{ CONDA_PY }}h{{PKG_HASH}}_{{ PKG_BUILDNUM }}                                      # [gpu_variant == "cuda" and osx]
       string: cpu_py{{ CONDA_PY }}h{{PKG_HASH}}_{{ PKG_BUILDNUM }}                                          # [gpu_variant == "cpu"]
     requirements:
       build:
         - {{ compiler('c') }}
         - {{ compiler('cxx') }}
-        - {{ compiler('cuda') }}  # [gpu_variant == 'gpu' and not osx]
+        - {{ compiler('cuda') }}  # [gpu_variant == "cuda" and not osx]
         - cmake
         - ninja
         - patch     # [not win]
@@ -49,17 +49,17 @@ outputs:
         - wheel
         - pip
         # The CUDAToolkit has been set as required in 0003-Make-FindCUDAToolkit-required-when-building-for-GPU.patch
-        - cuda-toolkit {{ cuda_compiler_version }}*   # [gpu_variant == 'gpu' and not osx]
-        - cuda-cudart {{ cuda_compiler_version }}                       # [gpu_variant == 'gpu' and not osx]
-        - libcublas {{ cuda_compiler_version }}                         # [gpu_variant == 'gpu' and not osx]
+        - cuda-toolkit {{ cuda_compiler_version }}*   # [gpu_variant == "cuda" and not osx]
+        - cuda-cudart {{ cuda_compiler_version }}                       # [gpu_variant == "cuda" and not osx]
+        - libcublas {{ cuda_compiler_version }}                         # [gpu_variant == "cuda" and not osx]
       run:
         - python
         - huggingface_hub
         - py-cpuinfo >=9.0.0,<10.0.0
-        - {{ pin_compatible('cuda-toolkit', max_pin='x.x') }}  # [gpu_variant == 'gpu' and not osx]
-        - __cuda                             # [gpu_variant == 'gpu' and not osx]
-        - cuda-cudart                        # [gpu_variant == 'gpu' and not osx]
-        - libcublas                          # [gpu_variant == 'gpu' and not osx]
+        - {{ pin_compatible('cuda-toolkit', max_pin='x.x') }}  # [gpu_variant == "cuda" and not osx]
+        - __cuda                             # [gpu_variant == "cuda" and not osx]
+        - cuda-cudart                        # [gpu_variant == "cuda" and not osx]
+        - libcublas                          # [gpu_variant == "cuda" and not osx]
 
     test:
       imports:
@@ -112,3 +112,4 @@ about:
 extra:
   recipe-maintainers:
     - JeanChristopheMorinPerso
+    - skupr-anaconda
