@@ -12,7 +12,7 @@ source:
   patches:
     - patches/0001-Load-library-from-conda-prefix.patch
     - patches/0002-Fix-install-path.patch
-    - patches/0003-Make-FindCUDAToolkit-required-when-building-for-GPU.patch
+    #- patches/0003-Make-FindCUDAToolkit-required-when-building-for-GPU.patch
 
 build:
   # Use a build number difference to ensure that the GPU
@@ -49,7 +49,7 @@ outputs:
         - wheel
         - pip
         # The CUDAToolkit has been set as required in 0003-Make-FindCUDAToolkit-required-when-building-for-GPU.patch
-        - cuda-toolkit {{ cuda_compiler_version }}*   # [gpu_variant == 'gpu' and not osx]
+        #- cuda-toolkit {{ cuda_compiler_version }}*   # [gpu_variant == 'gpu' and not osx]
         - cuda-cudart {{ cuda_compiler_version }}                       # [gpu_variant == 'gpu' and not osx]
         - libcublas {{ cuda_compiler_version }}                         # [gpu_variant == 'gpu' and not osx]
       run:
