@@ -50,12 +50,16 @@ outputs:
         - pip
         # The CUDAToolkit has been set as required in 0003-Make-FindCUDAToolkit-required-when-building-for-GPU.patch
         - cuda-toolkit {{ cuda_compiler_version }}*   # [gpu_variant == 'gpu' and not osx]
+        - cuda-cudart {{ cuda_compiler_version }}                       # [gpu_variant == 'gpu' and not osx]
+        - libcublas {{ cuda_compiler_version }}                         # [gpu_variant == 'gpu' and not osx]
       run:
         - python
         - huggingface_hub
         - py-cpuinfo >=9.0.0,<10.0.0
         - {{ pin_compatible('cuda-toolkit', max_pin='x.x') }}  # [gpu_variant == 'gpu' and not osx]
         - __cuda                             # [gpu_variant == 'gpu' and not osx]
+        - cuda-cudart                        # [gpu_variant == 'gpu' and not osx]
+        - libcublas                          # [gpu_variant == 'gpu' and not osx]
 
     test:
       imports:
