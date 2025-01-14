@@ -6,9 +6,9 @@ if [[ ${gpu_variant} == "cpu" ]]; then
     export GPU_SUPPORT="OFF"
 else
     if [[ ${target_platform} == osx-* ]]; then
-        export CMAKE_ARGS="${CMAKE_ARGS} -DCT_METAL=${GPU_SUPPORT} -DCUDAToolkit_FOUND=ON"
+        export CMAKE_ARGS="${CMAKE_ARGS} -DCT_METAL=${GPU_SUPPORT}"
     else
-        export CMAKE_ARGS="${CMAKE_ARGS} -DCT_CUBLAS=${GPU_SUPPORT} -DCUDAToolkit_FOUND=ON"
+        export CMAKE_ARGS="${CMAKE_ARGS} -DCT_CUBLAS=${GPU_SUPPORT}"
     fi
 fi
 
