@@ -14,7 +14,7 @@ index 16ce254..dcff14b 100644
  
      ctx->n_cb   = MIN(n_cb, GGML_METAL_MAX_BUFFERS);
      ctx->device = MTLCreateSystemDefaultDevice();
-+    if (ctx->mtl_device == nil) {
++    if (ctx->device == nil) {
 +        /*
 +        In macOS, in order for the system to provide a default Metal device object, you must link to the Core Graphics framework.
 +        You usually need to do this explicitly if you're writing apps that don't use graphics by default, such as command line tools.
@@ -25,8 +25,8 @@ index 16ce254..dcff14b 100644
 +        NSArray * devices = MTLCopyAllDevices();
 +        for (id<MTLDevice> dev in devices) {
 +            if (dev != nil) {
-+                if (ctx->mtl_device == nil) {
-+                    ctx->mtl_device = dev;
++                if (ctx->device == nil) {
++                    ctx->device = dev;
 +                } else {
 +                    [dev release];
 +                }
