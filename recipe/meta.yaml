@@ -86,6 +86,8 @@ test:
     - set "HUGGINGFACE_ASSETS_CACHE=huggingface_assets_cache"   # [win]
     - python -c "import ctransformers.llm; ctransformers.llm.load_library()"
     - pytest -v tests
+    - set PYTHONIOENCODING=utf8 # [win]
+    - set PYTHONUTF8=1          # [win]
     # https://github.com/marella/ctransformers#supported-models
     # Download a model and call llm - using a small model for cpu versions 
     - python -c "from ctransformers import AutoModelForCausalLM; llm = AutoModelForCausalLM.from_pretrained('marella/gpt-2-ggml'); print(llm('AI is going to'))" # [gpu_variant == "none"]
