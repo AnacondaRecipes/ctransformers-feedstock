@@ -3,7 +3,7 @@
 {% set build_number = 2 %}
 
 package:
-  name: {{ name }}-suite
+  name: {{ name }}
   version: {{ version }}
 
 source:
@@ -25,90 +25,71 @@ build:
   number: {{ build_number + 50 }}   # [gpu_variant == "cpu" and x86_64_opt == "v3"]
   number: {{ build_number + 40 }}   # [gpu_variant == "cpu" and x86_64_opt == "v3"]
   number: {{ build_number }}        # [gpu_variant == "cpu" and x86_64_opt == "none"]
+
   skip: true # [skip_cuda_prefect and (gpu_variant == "cuda")]
   skip: true  # [s390x]
 
+  string: cuda{{ cuda_compiler_version | replace('.', '') }}_v3_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [gpu_variant == "cuda" and x86_64_opt == "v3"]
+  string: cuda{{ cuda_compiler_version | replace('.', '') }}_v2_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [gpu_variant == "cuda" and x86_64_opt == "v2"]
+  string: cuda{{ cuda_compiler_version | replace('.', '') }}_v1_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [gpu_variant == "cuda" and x86_64_opt == "none"]    
+  string: mps_py{{ CONDA_PY }}h{{PKG_HASH}}_{{ PKG_BUILDNUM }}        # [gpu_variant == "metal"]
+  string: cpu_v3_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}   # [gpu_variant == "none" and x86_64_opt == "v3"]
+  string: cpu_v2_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}   # [gpu_variant == "none" and x86_64_opt == "v2"]
+  string: cpu_v1_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}   # [gpu_variant == "none" and x86_64_opt == "none"]
 
-outputs:
-  - name: ctransformers
-    script: build_base.sh  # [unix]
-    script: bld_base.bat   # [win]
-    build:
-      string: cuda{{ cuda_compiler_version | replace('.', '') }}_v3_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [gpu_variant == "cuda" and x86_64_opt == "v3"]
-      string: cuda{{ cuda_compiler_version | replace('.', '') }}_v2_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [gpu_variant == "cuda" and x86_64_opt == "v2"]
-      string: cuda{{ cuda_compiler_version | replace('.', '') }}_v1_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [gpu_variant == "cuda" and x86_64_opt == "none"]    
-      string: mps_py{{ CONDA_PY }}h{{PKG_HASH}}_{{ PKG_BUILDNUM }}        # [gpu_variant == "metal"]
-      string: cpu_v3_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}   # [gpu_variant == "none" and x86_64_opt == "v3"]
-      string: cpu_v2_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}   # [gpu_variant == "none" and x86_64_opt == "v2"]
-      string: cpu_v1_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}   # [gpu_variant == "none" and x86_64_opt == "none"]
-    requirements:
-      build:
-        - {{ compiler('c') }}
-        - {{ compiler('cxx') }}
-        - {{ compiler('cuda') }}  # [gpu_variant == "cuda"]
-        - cmake
-        - ninja
-        - patch     # [not win]
-        - m2-patch  # [win]
-      host:
-        - python
-        # setuptools build backend is used if CT_WHEEL=1
-        - setuptools
-        - wheel
-        - pip
-        # The CUDAToolkit has been set as required in 0003-Make-FindCUDAToolkit-required-when-building-for-GPU.patch
-        - cuda-toolkit {{ cuda_compiler_version }}*   # [gpu_variant == "cuda"]
-        - cuda-cudart {{ cuda_compiler_version }}     # [gpu_variant == "cuda"]
-        - libcublas {{ cuda_compiler_version }}       # [gpu_variant == "cuda"]
-      run:
-        - python
-        - huggingface_hub
-        - py-cpuinfo >=9.0.0,<10.0.0
-        - {{ pin_compatible('cuda-toolkit', max_pin='x.x') }}  # [gpu_variant == "cuda"]
-        - __cuda                             # [gpu_variant == "cuda"]
-        - cuda-cudart                        # [gpu_variant == "cuda"]
-        - libcublas                          # [gpu_variant == "cuda"]
-        - _x86_64-microarch-level >=2        # [x86_64_opt == "v2"]
-        - _x86_64-microarch-level >=3        # [x86_64_opt == "v3"]
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - {{ compiler('cuda') }}  # [gpu_variant == "cuda"]
+    - cmake
+    - ninja
+    - patch     # [not win]
+    - m2-patch  # [win]
+  host:
+    - python
+    # setuptools build backend is used if CT_WHEEL=1
+    - setuptools
+    - wheel
+    - pip
+    # The CUDAToolkit has been set as required in 0003-Make-FindCUDAToolkit-required-when-building-for-GPU.patch
+    - cuda-toolkit {{ cuda_compiler_version }}*   # [gpu_variant == "cuda"]
+    - cuda-cudart {{ cuda_compiler_version }}     # [gpu_variant == "cuda"]
+    - libcublas {{ cuda_compiler_version }}       # [gpu_variant == "cuda"]
+  run:
+    - python
+    - huggingface_hub
+    - py-cpuinfo >=9.0.0,<10.0.0
+    - {{ pin_compatible('cuda-toolkit', max_pin='x.x') }}  # [gpu_variant == "cuda"]
+    - __cuda                             # [gpu_variant == "cuda"]
+    - cuda-cudart                        # [gpu_variant == "cuda"]
+    - libcublas                          # [gpu_variant == "cuda"]
+    - _x86_64-microarch-level >=2        # [x86_64_opt == "v2"]
+    - _x86_64-microarch-level >=3        # [x86_64_opt == "v3"]
 
-    test:
-      imports:
-        - ctransformers
-      requires:
-        - pip
-      commands:
-        - pip check
-
-  - name: ctransformers-{{ gpu_variant }}
-    build:
-      noarch: generic
-    requirements:
-      run:
-        - ctransformers ={{ version }}={{ gpu_variant }}*
-
-    test:
-      imports:
-        - ctransformers
-      source_files:
-        - tests
-      requires:
-        - pip
-        - pytest
-      commands:
-        - pip check
-        # The default cache is ~/.cache/hub and ~/.cache/assets
-        # We don't want to fill the host's disk with test data.
-        - export HUGGINGFACE_HUB_CACHE=huggingface_cache            # [not win]
-        - export HUGGINGFACE_ASSETS_CACHE=huggingface_assets_cache  # [not win]
-        - set "HUGGINGFACE_HUB_CACHE=huggingface_cache"             # [win]
-        - set "HUGGINGFACE_ASSETS_CACHE=huggingface_assets_cache"   # [win]
-        - python -c "import ctransformers.llm; ctransformers.llm.load_library()"
-        - pytest -v tests
-        # This will actually download model and will force GPU.
-        # The models size is 2.87G+.
-        # On osx-arm64 the metal-gpu-selection.patch is needed because our CI fails with an error 'llama_new_context_with_model: failed to add buffer'
-        - python -c "from ctransformers import AutoModelForCausalLM; llm = AutoModelForCausalLM.from_pretrained('TheBloke/Llama-2-7B-GGML', gpu_layers=50); print(llm('AI is going to'))"
-
+test:
+  imports:
+    - ctransformers
+  source_files:
+    - tests
+  requires:
+    - pip
+    - pytest
+  commands:
+    - pip check
+    # The default cache is ~/.cache/hub and ~/.cache/assets
+    # We don't want to fill the host's disk with test data.
+    - export HUGGINGFACE_HUB_CACHE=huggingface_cache            # [not win]
+    - export HUGGINGFACE_ASSETS_CACHE=huggingface_assets_cache  # [not win]
+    - set "HUGGINGFACE_HUB_CACHE=huggingface_cache"             # [win]
+    - set "HUGGINGFACE_ASSETS_CACHE=huggingface_assets_cache"   # [win]
+    - python -c "import ctransformers.llm; ctransformers.llm.load_library()"
+    - pytest -v tests
+    # https://github.com/marella/ctransformers#supported-models
+    # Download a model and call llm - using a small model for cpu versions 
+    - python -c "from ctransformers import AutoModelForCausalLM; llm = AutoModelForCausalLM.from_pretrained('marella/gpt-2-ggml'); print(llm('AI is going to'))" # [gpu_variant == "none"]
+    # Download a model and call llm, forcing gpu - The models size is 2.87G+.
+    - python -c "from ctransformers import AutoModelForCausalLM; llm = AutoModelForCausalLM.from_pretrained('TheBloke/Llama-2-7B-GGML', gpu_layers=50); print(llm('AI is going to'))"
 
 about:
   home: https://github.com/marella/ctransformers
@@ -124,3 +105,4 @@ extra:
   recipe-maintainers:
     - JeanChristopheMorinPerso
     - skupr-anaconda
+    - cbouss
