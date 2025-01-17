@@ -5,7 +5,7 @@ set -ex
 rm -v -rf ctransformers/lib
 
 export GPU_SUPPORT="ON"
-if [[ ${gpu_variant} == "cpu" ]]; then
+if [[ ${gpu_variant} == "none" ]]; then
     export GPU_SUPPORT="OFF"
 else
     if [[ ${target_platform} == osx-* ]]; then

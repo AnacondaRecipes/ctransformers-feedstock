@@ -8,7 +8,7 @@ SetLocal EnableDelayedExpansion
 REM The repo contains pre-compiled libraries. We don't want that.
 rmdir /s /q ctransformers\lib
 
-if "%gpu_variant%"=="cpu" (
+if "%gpu_variant%"=="none" (
 	set CMAKE_ARGS="-DCT_CUBLAS=OFF"
 ) else (
 	set CMAKE_ARGS="-DCT_CUBLAS=ON"
