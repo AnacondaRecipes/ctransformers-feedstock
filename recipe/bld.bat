@@ -5,12 +5,14 @@ echo "Building %PKG_NAME%."
 
 SetLocal EnableDelayedExpansion
 
+REM The repo contains pre-compiled libraries. We don't want that.
+rmdir /s /q ctransformers\lib
+
 if "%gpu_variant%"=="cpu" (
 	set CMAKE_ARGS="-DCT_CUBLAS=OFF"
 ) else (
 	set CMAKE_ARGS="-DCT_CUBLAS=ON"
 )
-
 
 REM relevant section: https://github.com/marella/ctransformers/blob/v0.2.27/CMakeLists.txt#L68-L98
 if "%x86_64_opt%"=="v3" (
@@ -30,9 +32,6 @@ if %ERRORLEVEL% neq 0 exit 1
 :: Without %PREFIX% it will be installed incorrectly into C:\Program files\lib
 cmake --install build --prefix %PREFIX%
 if %ERRORLEVEL% neq 0 exit 1
-
-REM The repo contains pre-compiled libraries. We don't want that.
-rmdir /s /q ctransformers\lib
 
 set "CT_WHEEL=1"
 %PYTHON% -m pip install . -v --no-deps --no-build-isolation

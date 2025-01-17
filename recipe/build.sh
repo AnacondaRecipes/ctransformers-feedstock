@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -ex
 
+# The repo contains pre-compiled libraries. We don't want that.
+rm -v -rf ctransformers/lib
+
 export GPU_SUPPORT="ON"
 if [[ ${gpu_variant} == "cpu" ]]; then
     export GPU_SUPPORT="OFF"
@@ -32,8 +35,5 @@ cmake . -G Ninja -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON ${CM
 
 cmake --build build --parallel ${CPU_COUNT} --verbose
 cmake --install build --prefix "${PREFIX}"
-
-# The repo contains pre-compiled libraries. We don't want that.
-rm -v -rf ctransformers/lib
 
 CT_WHEEL=1 ${PYTHON} -m pip install . -v --no-deps --no-build-isolation

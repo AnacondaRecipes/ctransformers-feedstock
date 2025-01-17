@@ -21,17 +21,18 @@ build:
   # installed where the platform supports it.
   number: {{ build_number + 150 }}  # [gpu_variant == "cuda" and x86_64_opt == "v3"]
   number: {{ build_number + 140 }}  # [gpu_variant == "cuda" and x86_64_opt == "v2"]
-  number: {{ build_number + 100 }}  # [(gpu_variant == "cuda" and x86_64_opt == "none") or gpu_variant == "metal"]
-  number: {{ build_number + 50 }}   # [gpu_variant == "cpu" and x86_64_opt == "v3"]
-  number: {{ build_number + 40 }}   # [gpu_variant == "cpu" and x86_64_opt == "v3"]
-  number: {{ build_number }}        # [gpu_variant == "cpu" and x86_64_opt == "none"]
+  number: {{ build_number + 100 }}  # [gpu_variant == "cuda" and x86_64_opt == "none"]
+  number: {{ build_number + 100 }}  # [gpu_variant == "metal"]
+  number: {{ build_number + 50 }}   # [gpu_variant == "none" and x86_64_opt == "v3"]
+  number: {{ build_number + 40 }}   # [gpu_variant == "none" and x86_64_opt == "v2"]
+  number: {{ build_number }}        # [gpu_variant == "none" and x86_64_opt == "none"]
 
   skip: true # [skip_cuda_prefect and (gpu_variant == "cuda")]
   skip: true  # [s390x]
 
   string: cuda{{ cuda_compiler_version | replace('.', '') }}_v3_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [gpu_variant == "cuda" and x86_64_opt == "v3"]
   string: cuda{{ cuda_compiler_version | replace('.', '') }}_v2_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [gpu_variant == "cuda" and x86_64_opt == "v2"]
-  string: cuda{{ cuda_compiler_version | replace('.', '') }}_v1_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [gpu_variant == "cuda" and x86_64_opt == "none"]    
+  string: cuda{{ cuda_compiler_version | replace('.', '') }}_v1_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [gpu_variant == "cuda" and x86_64_opt == "none"]
   string: mps_py{{ CONDA_PY }}h{{PKG_HASH}}_{{ PKG_BUILDNUM }}        # [gpu_variant == "metal"]
   string: cpu_v3_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}   # [gpu_variant == "none" and x86_64_opt == "v3"]
   string: cpu_v2_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}   # [gpu_variant == "none" and x86_64_opt == "v2"]
