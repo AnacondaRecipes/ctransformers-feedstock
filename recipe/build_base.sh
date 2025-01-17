@@ -12,11 +12,22 @@ else
     fi
 fi
 
-# Notes:
-# * osx-arm64 and linux-aarch64 will also default to CT_INSTRUCTIONS=basic (-mcpu=native)
-# * win-64 and linux-64 supports CT_INSTRUCTIONS=avx and CT_INSTRUCTIONS=avx2. It's up to us to decide which one we want to support.
-# * avx2 is a default supported instruction
-# TODO: add support for all supported instructions
+# Configure CPU optimization flags based on the x86_64_opt variable:
+# - "v3" sets march=x86-64-v3, enabling AVX, AVX2, and other extensions (suitable for modern CPUs)
+# - Any other value (or unset) keeps the default march=nocona (for older CPUs or maximum compatibility)
+# This affects CXXFLAGS, CFLAGS, and CPPFLAGS to ensure consistent optimization across all compilations.
+# relevant section: https://github.com/marella/ctransformers/blob/v0.2.27/CMakeLists.txt#L68-L98
+export CMAKE_ARGS="${CMAKE_ARGS} -DCT_INSTRUCTIONS=basic"
+if [[ ${x86_64_opt:-} = "v3" ]]; then
+    export CXXFLAGS="${CXXFLAGS/march=nocona/march=x86-64-v3}"
+    export CFLAGS="${CFLAGS/march=nocona/march=x86-64-v3}"
+    export CPPFLAGS="${CPPFLAGS/march=nocona/march=x86-64-v3}"
+elif [[ ${x86_64_opt:-} = "v2" ]]; then
+    export CXXFLAGS="${CXXFLAGS/march=nocona/march=x86-64-v2}"
+    export CFLAGS="${CFLAGS/march=nocona/march=x86-64-v2}"
+    export CPPFLAGS="${CPPFLAGS/march=nocona/march=x86-64-v2}"
+fi
+
 cmake . -G Ninja -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON ${CMAKE_ARGS}
 
 cmake --build build --parallel ${CPU_COUNT} --verbose

@@ -1,3 +1,14 @@
 gpu_variant:
   - cpu
   - cuda
+  - metal
+
+x86_64_opt:
+  - none
+  - v2                         # [(x86 or x86_64) and not osx]
+  - v3                         # [(x86 or x86_64) and not osx]
+
+gpu_variant:
+  - none
+  - metal                      # [osx and arm64]
+  - cuda-12                    # [win or (linux and x86_64)]

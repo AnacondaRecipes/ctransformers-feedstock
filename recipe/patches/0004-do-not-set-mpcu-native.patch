@@ -1,0 +1,18 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 718edeb..4938544 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -69,9 +69,10 @@ add_compile_options(
+ 
+ if (${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm" OR ${CMAKE_SYSTEM_PROCESSOR} MATCHES "aarch64")
+     message(STATUS "ARM detected")
+-    if (NOT MSVC)
+-        add_compile_options(-mcpu=native)
+-    endif()
++    # Let's let our activation scripts set the default parameters.
++    # if (NOT MSVC)
++    #     add_compile_options(-mcpu=native)
++    # endif()
+ else()
+     message(STATUS "x86 detected")
+     if (APPLE AND CT_INSTRUCTIONS STREQUAL "basic")
