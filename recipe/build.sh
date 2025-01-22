@@ -21,14 +21,10 @@ fi
 # This affects CXXFLAGS, CFLAGS, and CPPFLAGS to ensure consistent optimization across all compilations.
 # relevant section: https://github.com/marella/ctransformers/blob/v0.2.27/CMakeLists.txt#L68-L98
 export CMAKE_ARGS="${CMAKE_ARGS} -DCT_INSTRUCTIONS=basic"
-if [[ ${x86_64_opt:-} = "v3" ]]; then
-    export CXXFLAGS="${CXXFLAGS/march=nocona/march=x86-64-v3}"
-    export CFLAGS="${CFLAGS/march=nocona/march=x86-64-v3}"
-    export CPPFLAGS="${CPPFLAGS/march=nocona/march=x86-64-v3}"
-elif [[ ${x86_64_opt:-} = "v2" ]]; then
-    export CXXFLAGS="${CXXFLAGS/march=nocona/march=x86-64-v2}"
-    export CFLAGS="${CFLAGS/march=nocona/march=x86-64-v2}"
-    export CPPFLAGS="${CPPFLAGS/march=nocona/march=x86-64-v2}"
+if [[ ${x86_64_opt:-} != "none" ]]; then
+    export CXXFLAGS="${CXXFLAGS/march=nocona/march=x86-64-${x86_64_opt}}"
+    export CFLAGS="${CFLAGS/march=nocona/march=x86-64-${x86_64_opt}}"
+    export CPPFLAGS="${CPPFLAGS/march=nocona/march=x86-64-${x86_64_opt}}"
 fi
 
 cmake . -G Ninja -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON ${CMAKE_ARGS}
