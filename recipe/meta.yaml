@@ -93,7 +93,7 @@ test:
     # Download a model and call llm - using a small model for cpu versions 
     - python -c "from ctransformers import AutoModelForCausalLM; llm = AutoModelForCausalLM.from_pretrained('marella/gpt-2-ggml'); print(llm('AI is going to'))" # [gpu_variant == "none"]
     # Download a model and call llm, forcing gpu - The models size is 2.87G+.
-    - python -c "from ctransformers import AutoModelForCausalLM; llm = AutoModelForCausalLM.from_pretrained('TheBloke/Llama-2-7B-GGML', gpu_layers=50); print(llm('AI is going to'))"
+    - python -c "from ctransformers import AutoModelForCausalLM; llm = AutoModelForCausalLM.from_pretrained('TheBloke/Llama-2-7B-GGML', gpu_layers=50); print(llm('AI is going to'))" # [gpu_variant != "none"]
 
 about:
   home: https://github.com/marella/ctransformers
