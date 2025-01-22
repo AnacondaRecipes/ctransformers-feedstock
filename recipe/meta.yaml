@@ -14,6 +14,7 @@ source:
     - patches/0002-Fix-install-path.patch
     - patches/0003-metal-gpu-selection.patch
     - patches/0004-do-not-set-mpcu-native.patch
+    - patches/0005-do-not-set-march-on-osx.patch
 
 build:
   # Use a build number difference to ensure that the GPU
