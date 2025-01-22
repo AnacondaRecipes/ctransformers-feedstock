@@ -19,6 +19,10 @@ fi
 # relevant section: https://github.com/marella/ctransformers/blob/v0.2.27/CMakeLists.txt#L68-L98
 export CMAKE_ARGS="${CMAKE_ARGS} -DCT_INSTRUCTIONS=basic"
 if [[ ${x86_64_opt:-} != "none" ]]; then
+    if [[ ! "${CXXFLAGS}" =~ "march=nocona" ]]; then
+        echo "Error: Substring 'march=nocona' not found in CXXFLAGS - gcc activation scripts have changed." >&2
+        exit 1
+    fi
     export CXXFLAGS="${CXXFLAGS/march=nocona/march=x86-64-${x86_64_opt}}"
     export CFLAGS="${CFLAGS/march=nocona/march=x86-64-${x86_64_opt}}"
     export CPPFLAGS="${CPPFLAGS/march=nocona/march=x86-64-${x86_64_opt}}"
