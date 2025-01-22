@@ -4,14 +4,11 @@ set -ex
 # The repo contains pre-compiled libraries. We don't want that.
 rm -v -rf ctransformers/lib
 
-export GPU_SUPPORT="ON"
-if [[ ${gpu_variant} == "none" ]]; then
-    export GPU_SUPPORT="OFF"
-else
+if [[ ${gpu_variant} != "none" ]]; then
     if [[ ${target_platform} == osx-* ]]; then
-        export CMAKE_ARGS="${CMAKE_ARGS} -DCT_METAL=${GPU_SUPPORT}"
+        export CMAKE_ARGS="${CMAKE_ARGS} -DCT_METAL=ON"
     else
-        export CMAKE_ARGS="${CMAKE_ARGS} -DCT_CUBLAS=${GPU_SUPPORT}"
+        export CMAKE_ARGS="${CMAKE_ARGS} -DCT_CUBLAS=ON"
     fi
 fi
 
