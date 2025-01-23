@@ -54,7 +54,6 @@ requirements:
     - setuptools
     - wheel
     - pip
-    # The CUDAToolkit has been set as required in 0003-Make-FindCUDAToolkit-required-when-building-for-GPU.patch
     - cuda-toolkit {{ cuda_compiler_version }}*   # [gpu_variant == "cuda"]
     - cuda-cudart {{ cuda_compiler_version }}     # [gpu_variant == "cuda"]
     - libcublas {{ cuda_compiler_version }}       # [gpu_variant == "cuda"]
