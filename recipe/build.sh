@@ -4,12 +4,13 @@ set -ex
 # The repo contains pre-compiled libraries. We don't want that.
 rm -v -rf ctransformers/lib
 
-if [[ ${gpu_variant} != "none" ]]; then
-    if [[ ${target_platform} == osx-* ]]; then
-        export CMAKE_ARGS="${CMAKE_ARGS} -DCT_METAL=ON"
-    else
-        export CMAKE_ARGS="${CMAKE_ARGS} -DCT_CUBLAS=ON"
-    fi
+if [[ ${gpu_variant} == "cuda" ]]; then
+    export CMAKE_ARGS="${CMAKE_ARGS} -DCT_CUBLAS=ON"
+    # CMAKE_CUDA_ARCHITECTURES is by default defined to give baseline features and good compatibility, it looks like, 
+    # but defining it ourselves and including some later compute capabilities might leverage optimizations on later GPUs.
+    # https://github.com/marella/ctransformers/blob/ed02cf4b9322435972ff3566fd4832806338ca3d/CMakeLists.txt#L101
+elif [[ ${gpu_variant} == "metal" ]]; then
+    export CMAKE_ARGS="${CMAKE_ARGS} -DCT_METAL=ON"
 fi
 
 # Configure CPU optimization flags based on the x86_64_opt variable:
