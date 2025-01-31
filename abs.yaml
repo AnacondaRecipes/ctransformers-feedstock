@@ -7,5 +7,3 @@ build_parameters:
 
 build_env_vars:
   ANACONDA_ROCKET_ENABLE_PY313 : yes
-
-aggregate_check: false
