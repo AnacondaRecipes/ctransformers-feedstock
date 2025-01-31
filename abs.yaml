@@ -1,0 +1,9 @@
+# the conda build parameters to use
+build_parameters:
+  - "--suppress-variables"
+  - "--skip-existing"
+  - "--error-overlinking"
+  - "--variants \"{skip_cuda_prefect: True}\""
+
+build_env_vars:
+  ANACONDA_ROCKET_ENABLE_PY313 : yes
